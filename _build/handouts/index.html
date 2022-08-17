@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Notes App | Devmountain Foundations</title>
+
+      <link
+        href="_static/pygments.css"
+        rel="stylesheet"
+        type="text/css"
+      />
+      <link href="_static/devmountain.css" rel="stylesheet" type="text/css" />
+          <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+          <link rel="stylesheet" type="text/css" href="_static/devmountain.css" />
+          <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+          <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+
+      <script src="_static/pdfobject.min.js"></script>
+      
+  </head>
+  <body>
+      <div id="handouts-container">
+        <header id="page-header">
+            <p id="project-title">Devmountain Foundations</p>
+            <p id="page-title">Notes App</p>
+              <p id="backlink">
+                <a href="/"> &laquo; Back to Homepage </a>
+              </p>
+        </header>
+
+        <nav id="page-toc"><ul>
+<li><a class="reference internal" href="#">Notes App</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#day-1-initializing-the-spring-app-and-hosting-a-postgresql-database-on-heroku">Day 1: Initializing the Spring App and Hosting a PostgreSQL Database on Heroku</a><ul>
+<li><a class="reference internal" href="#step-1-hosting-a-database">Step 1: Hosting a Database</a></li>
+<li><a class="reference internal" href="#step-2-connecting-to-the-database">Step 2: Connecting to the Database</a></li>
+<li><a class="reference internal" href="#step-3-creating-the-spring-boot-app-using-spring-initializr">Step 3: Creating the Spring Boot App using Spring Initializr</a></li>
+<li><a class="reference internal" href="#step-4-connecting-the-spring-boot-application-to-the-external-database">Step 4: Connecting the Spring Boot Application to the External Database</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#day-2-creating-the-entities-and-data-transfer-objects">Day 2: Creating the Entities and Data Transfer Objects</a><ul>
+<li><a class="reference internal" href="#step-1-the-dao-design-pattern">Step 1: The DAO Design Pattern</a></li>
+<li><a class="reference internal" href="#step-2-entity-creation-and-mapping-to-tables-within-a-relational-database">Step 2: Entity Creation and Mapping to Tables within a Relational Database</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#day-3-creating-the-access-layers-to-interact-with-the-database">Day 3: Creating the Access Layers to Interact with the Database</a><ul>
+<li><a class="reference internal" href="#step-1-creating-the-repository-layer">Step 1: Creating the Repository Layer</a></li>
+<li><a class="reference internal" href="#step-2-creating-the-service-layer">Step 2: Creating the Service Layer</a></li>
+<li><a class="reference internal" href="#step-3-creating-your-controllers">Step 3: Creating your Controllers</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#day-4-creating-the-front-end-code">Day 4:Creating the Front End Code</a><ul>
+<li><a class="reference internal" href="#step-1-where-do-we-put-everything-inside-of-our-spring-boot-application">Step 1: Where do we put everything inside of our Spring Boot Application?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#day-5-complete-project-and-further-study">Day 5: Complete Project and Further Study</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+
+        <main id="page-content">
+            <section class="section" id="notes-app">
+<h1>Notes App</h1>
+<section class="section" id="introduction">
+<h2>Introduction</h2>
+<p>The Spring Boot Application we will be making this week is a simple Note App that will be able to handle the full scope of CRUD operations. You will be creating a database to persist your data, a server that will handle requests, RESTful API endpoints, a static HTML, CSS,  JavaScript Frontend with simple login and registration functionality, and the ability to add, update and delete notes that are specific to the user who is currently logged in. This will provide a simple backbone, feel free to go above and beyond the scope of the project and experiment with your own ideas!</p>
+</section>
+<section class="section" id="day-1-initializing-the-spring-app-and-hosting-a-postgresql-database-on-heroku">
+<h2>Day 1: Initializing the Spring App and Hosting a PostgreSQL Database on Heroku</h2>
+<p>To begin this project, first we need to create a new project on Heroku.</p>
+<section class="section" id="step-1-hosting-a-database">
+<h3>Step 1: Hosting a Database</h3>
+<ul class="simple">
+<li><p>Navigate to <a class="reference external" href="https://www.heroku.com/" target="_blank">https://www.heroku.com/</a> and login.</p></li>
+<li><p>Create a new project on Heroku (The free version only allows 5 projects so you may need to delete an old one in order to create a new project)</p></li>
+<li><p>After you have created the new project, click on the name of the project so that it takes you to the project overview page.</p></li>
+</ul>
+<img alt="_images/image1.png" src="_images/image1.png" />
+<ul class="simple">
+<li><p>Click on the <cite>Configure Add-ons</cite> link and search for <cite>Heroku-Postgres</cite> and add it to the project by clicking on “Submit Order Form” on the pop up.</p></li>
+</ul>
+<img alt="_images/image2.png" src="_images/image2.png" />
+<ul class="simple">
+<li><p>Congratulations! You have successfully created a free, hosted database on Heroku! At this point you can click on the “Heroku Postgres” link and it will redirect you to the page that shows all the information regarding the database.</p></li>
+</ul>
+<img alt="_images/image3.png" src="_images/image3.png" />
+<img alt="_images/image4.png" src="_images/image4.png" />
+<ul class="simple">
+<li><p>To see the credentials needed to connect to the Database click on the “Settings” tab and navigate to the “Database Credentials” section. On the right hand side of the screen there is a button labeled “View Credentials” which drops down the section and shows the credentials.</p></li>
+<li><p>At this point we can open PgAdmin and connect to this database, If you have not installed PgAdmin, you can do so by following the directions for your operating system on this webpage <a class="reference external" href="https://www.pgadmin.org/download/" target="_blank">https://www.pgadmin.org/download/</a></p></li>
+</ul>
+</section>
+<section class="section" id="step-2-connecting-to-the-database">
+<h3>Step 2: Connecting to the Database</h3>
+<ul class="simple">
+<li><p>Open PgAdmin and log in with the master password that you set during the installation.</p></li>
+<li><p>Right click on the word “Servers” in the left hand pane</p></li>
+</ul>
+<img alt="_images/image5.png" src="_images/image5.png" />
+<img alt="_images/image6.png" src="_images/image6.png" />
+<ul class="simple">
+<li><p>Hover on “Create” and choose “Server”</p></li>
+</ul>
+<img alt="_images/image7.png" src="_images/image7.png" />
+<ul class="simple">
+<li><p>Give this connection a name to help you differentiate between various connections</p></li>
+</ul>
+<img alt="_images/image8.png" src="_images/image8.png" />
+<ul class="simple">
+<li><p>Click on the Connection tab and copy the “Host”, “User”, “Password”, and “Database” credentials from Heroku into the corresponding fields in the Connections tab</p></li>
+</ul>
+<img alt="_images/image9.png" src="_images/image9.png" />
+<ul class="simple">
+<li><p>Click on the SSL Tab and in the “SSL mode” drop down select the “Require” option</p></li>
+</ul>
+<img alt="_images/image10.png" src="_images/image10.png" />
+<ul class="simple">
+<li><p>Click on the Advanced Tab and in the “DB restriction” box, paste in the “Database” credential and click “Create YOUR_ITEM_HERE”</p></li>
+</ul>
+<img alt="_images/image11.png" src="_images/image11.png" />
+<ul class="simple">
+<li><p>Click “Save”</p></li>
+<li><p>Congratulations you have successfully connected to the hosted Database! Using PgAdmin, we can query our database and see what is being generated, and being persisted through Hibernate and Spring Data JPA when we get to that point.</p></li>
+</ul>
+</section>
+<section class="section" id="step-3-creating-the-spring-boot-app-using-spring-initializr">
+<h3>Step 3: Creating the Spring Boot App using Spring Initializr</h3>
+<p><strong>The project files will be supplied to you to download. The following steps are for how to replicate the starter project files for your own future projects</strong></p>
+<ul>
+<li><p>Navigate to <a class="reference external" href="https://start.spring.io/" target="_blank">https://start.spring.io/</a></p></li>
+<li><p>We are creating:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A Maven Project (Maven is the package manager similar to npm in JavaScript)</p></li>
+<li><p>The Java Language</p></li>
+<li><p>We want the most recent, stable version of Spring Boot, which at the time of writing was 2.6.4.</p></li>
+<li><p>We can give our project a Group name of “com.devmountain” (most group names and package names in Java development follow the domain name of the organization)</p></li>
+<li><p>Artifact is similar to the name of our application and is how Maven keeps track of everything in the build phase, in this case we can name it something like “noteApp”</p></li>
+<li><p>Name can be the same as the Artifact name, in this case something like “noteApp”</p></li>
+<li><p>Description is a brief description of the application</p></li>
+<li><p>Package name will be the base package for our application and should follow the naming convention “Group.Name”</p></li>
+<li><p>Packaging we want “Jar” (Feel free to research further when you would want a War vs a Jar. Most modern applications are Tomcat web server based and will use a Jar)</p></li>
+<li><p>Select the JDK you wish to use for your application, the Long Term Support version of Java is the JDK 8, or the JDK 11. More recent versions will have newer features available in the Java language, You would need to be considerate to this however if you were developing with a code base that had legacy code, because you may run into interoperability issues with legacy code you are pulling in to the project and may need to drop the JDK to an older version. For now let’s select JDK 11</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<img alt="_images/image12.png" src="_images/image12.png" />
+<ul class="simple">
+<li><p>Click on “ADD DEPENDENCIES” on the right hand side of the window</p></li>
+</ul>
+<img alt="_images/image13.png" src="_images/image13.png" />
+<ul class="simple">
+<li><p>The Dependencies we will be selecting are Spring Web, Lombok, Rest Repositories, Rest Repositories, Spring Data JPA, and PostgreSQL Driver</p></li>
+</ul>
+<img alt="_images/image14.png" src="_images/image14.png" />
+<ul class="simple">
+<li><p>Click “Generate”</p></li>
+</ul>
+<img alt="_images/image15.png" src="_images/image15.png" />
+<ul class="simple">
+<li><p>It should have downloaded a file to your Downloads folder, you can click into this folder and extract the file to the directory you want to keep this project in</p></li>
+</ul>
+<img alt="_images/image16.png" src="_images/image16.png" />
+<img alt="_images/image17.png" src="_images/image17.png" />
+<ul class="simple">
+<li><p>After you have extracted the folder, open IntelliJ and Open the Project</p></li>
+</ul>
+<img alt="_images/image18.png" src="_images/image18.png" />
+<img alt="_images/image19.png" src="_images/image19.png" />
+<p><strong>There may be nested folders with the same name inside your directory, be sure to click on and open the one that has the “src” folder 1 level down</strong></p>
+<ul class="simple">
+<li><p>Congratulations! You have successfully created a Spring Boot App using Spring Initializr!</p></li>
+</ul>
+</section>
+<section class="section" id="step-4-connecting-the-spring-boot-application-to-the-external-database">
+<h3>Step 4: Connecting the Spring Boot Application to the External Database</h3>
+<ul class="simple">
+<li><p>Now that your project is open in IntelliJ open the application.properties file inside of “src/main/resources”</p></li>
+</ul>
+<img alt="_images/image20.png" src="_images/image20.png" />
+<ul>
+<li><p>The application.properties file is where all the configuration takes place for configuring a Spring Boot Application. We need to set a few properties here to connect to our external datasource, be sure to replace the Heroku Credentials with the actual credentials for your heroku project:</p>
+<blockquote>
+<div><ul>
+<li><p>spring.datasource.url=jdbc:postgresql://HEROKU_CREDENTIAL_HOST:5432/HEROKU_DB</p></li>
+<li><p>spring.datasource.username=HEROKU_CREDENTIAL_USERNAME</p></li>
+<li><p>spring.datasource.password=HEROKU_CREDENTIAL_PASSWORD</p></li>
+<li><p>spring.datasource.driverClassName=org.postgresql.Driver</p></li>
+<li><p>spring.jpa.database-platform=org.hibernate.dialect.PostgreSQL95Dialect</p></li>
+<li><p>spring.jpa.hibernate.ddl-auto=[validate, update, create-drop, create]</p></li>
+<li><p><strong>Choose one from the previous options, until you have your schema set, `create-drop` is the most helpful. After you get your schema to where you want, change this property to `create` and start the application. The once it is running change the property to `update` while you finish development</strong></p></li>
+<li><p>And these two are optional but helpful for development:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>logging.level.sql=debug</p></li>
+<li><p>spring.jpa.show-sql=true</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<img alt="_images/image21.png" src="_images/image21.png" />
+<p><strong>CAUTION: IF YOU PUSH THIS TO GITHUB, YOUR CREDENTIALS WILL BE AVAILABLE PUBLICLY AND ANYONE WOULD BE ABLE TO ACCESS THIS DATABASE. BE SURE TO ADD THE application.properties FILE TO THE .gitignore SO THAT YOU DO NOT LEAK YOUR CREDENTIALS. FURTHER QUESTIONS ABOUT HOW TO STORE THESE FIELDS SECURELY PLEASE ASK YOUR SME MENTOR OR THE TECH LEAD</strong></p>
+<ul class="simple">
+<li><p>Run the Spring Boot Application by clicking on the play button in the top right corner</p></li>
+</ul>
+<img alt="_images/image22.png" src="_images/image22.png" />
+<ul class="simple">
+<li><p>Or by right clicking on the “main” method inside of the NoteAppApplication class</p></li>
+</ul>
+<img alt="_images/image23.png" src="_images/image23.png" />
+<img alt="_images/image24.png" src="_images/image24.png" />
+<p>And see if your application starts up! Stop here and ask for help if you are unable to run the Spring Application or if you see any errors in your console in IntelliJ</p>
+</section>
+</section>
+<section class="section" id="day-2-creating-the-entities-and-data-transfer-objects">
+<h2>Day 2: Creating the Entities and Data Transfer Objects</h2>
+<section class="section" id="step-1-the-dao-design-pattern">
+<h3>Step 1: The DAO Design Pattern</h3>
+<p>DAO Design stands for Data Access Object design, and it is a common design pattern you will see in Java. Java is a strongly typed, verbose language that is Object-Oriented. DAO Design enables you to break your code into smaller pieces that are all specialized and do one specific Job. These pieces are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Entities: An object that represents the thing you are trying to persist</p></li>
+<li><p>DTO’s (Data Transfer Objects): Objects who are copies of the entities, just without the mapping annotations that connect entities to the Database</p></li>
+<li><p>Repositories: Layer of code that interacts directly with the Database and your Entities</p></li>
+<li><p>Services: Layer of code that interacts with Repository layer and the Controller layer, but is blind to the Entities</p></li>
+<li><p>Controllers: Handle incoming HTTP requests, and interact with Services but are blind to Repositories and Entities.</p></li>
+<li><p>This loosely coupled design pattern enables you to develop rapidly when you can conceptually understand what is going on.</p></li>
+</ul>
+</div></blockquote>
+<p>In addition to DAO Design, Java also utilizes Interfaces to manage method signatures and allow developers to test out various implementations.</p>
+<p>A metaphor to understand why we use interfaces is this: Imagine you are planning a party, you have a lot of different things going on and tasks that need to be accomplished. Part of the party requirements is that your client wants 15 Pepperoni Pizzas available for people at the party to eat. So, you as the party planner head to a Pizza Establishment and ask for 15 Pepperoni Pizzas, the cashier hands you 15 pizzas and you go on your way.</p>
+<p>Do you have to know how the Pizza Place procured 15 Pepperoni Pizzas? No, the only thing you have to know is that when you show up to the counter with your order, you get your order. Behind the scenes they could be making them from scratch, they could be reheating frozen pizzas, they could be sourcing them from another store, they could be cooking them in a wood fired oven, etc.</p>
+<p>You can think of the Interface as being the counter, and the actual implementation class as what is going on behind the scenes. The interface class provides a signature, as well as what kind of data to expect from that method. All outside code has to do is incorporate the interface in one spot knowing that when they invoke that specific method it returns the data type from the signature and the developer can then create the business logic to handle what they need to do. For example, lets say a company uses a SQL database like PostgreSQL, then later on the company decides to switch from a SQL database to to a NoSQL database like MongoDB, the only place that needs to be changed in your application is inside of the implementation class where you were reaching into the SQL database, and migrating it to an implementation that reaches into a NoSQL database to retrieve the data, format it the way the signature is expecting (e.g. List&lt;YOUR_TYPE_HERE&gt;, Optional&lt;YOUR_TYPE_HERE&gt;, YOUR_TYPE_HERE, Change DateTime to LocalDateTime, etc.), return the result, and voila! Your code still works!</p>
+<p>Now that we have laid a foundation for what we are going to do, let’s talk about the tools we are going to use to do it. The first of these tools is Hibernate. Hibernate is what’s called an Object Relational Mapper or ORM. Hibernate takes your Plain Old Java Objects and maps the member fields to a Relational Database for you. It enables you to be able to persist all of the incoming data without having to write SQL queries. Let’s be clear though, just because you don’t have to write SQL queries doesn’t mean that you can’t write SQL queries. You can still create your custom queries and use them.</p>
+<p>Hibernate also keeps track of our relationships within the relational database (e.g. One-to-One, One-to-Many, Many-to-One, and Many-to-Many relationships) and build those relationships between your objects.</p>
+<p>In conjunction with Hibernate we are going to be using Spring Data JPA which is an amazing tool that handles the Repository layer implementations for us in our development based on our Interfaces that we create.</p>
+<p>Let’s begin making our Entities!</p>
+</section>
+<section class="section" id="step-2-entity-creation-and-mapping-to-tables-within-a-relational-database">
+<h3>Step 2: Entity Creation and Mapping to Tables within a Relational Database</h3>
+<p>The most important step to understand when creating an application is what your data model is going to look like. What relationships are going to exist. For this project, here is how we imagine the data model looking:</p>
+<img alt="_images/image25.png" src="_images/image25.png" />
+<p>As you can see we have a Database with two tables in it, Users and Notes. These two tables have a One-to-Many and Many-to-One relationship, One User can have Many Notes, and Many Notes can belong to One User. That relationship is represented by the column within the Notes table called “user_id” which is a foreign key to the Users table’s primary key.</p>
+<p>Next let’s create the Objects that will represent the the rows that will make up these tables</p>
+<ul class="simple">
+<li><p>Inside of IntelliJ, open the noteApp from yesterday and navigate to src/main/java/com.devmountain.noteApp package</p></li>
+</ul>
+<img alt="_images/image26.png" src="_images/image26.png" />
+<ul class="simple">
+<li><p>Right click on the com.devmountain.noteApp package and create a new package called “entities”</p></li>
+</ul>
+<img alt="_images/image27.png" src="_images/image27.png" />
+<img alt="_images/image28.png" src="_images/image28.png" />
+<ul class="simple">
+<li><p>Right click on the new entities package you just created and create a new Java Class called “User”</p></li>
+</ul>
+<img alt="_images/image29.png" src="_images/image29.png" />
+<img alt="_images/image30.png" src="_images/image30.png" />
+<ul class="simple">
+<li><p>Above the User class declaration, add the &#64;Entity Annotation (this is annotation is what tells Spring that this class is being mapped to a data source) as well as the &#64;Table annotation (This is where you can set what table you want these objects to be mapped to)</p></li>
+</ul>
+<img alt="_images/image31.png" src="_images/image31.png" />
+<ul class="simple">
+<li><p>Inside the curly braces of the class, we need to give our class an Id, as well as define what kind of strategy we want to use to generate those Id’s. Add the &#64;Id annotation as well as the &#64;GeneratedValue annotation with the strategy option defined as the GenerationType.IDENTITY to a private member variable called “id” and is of type “Long”</p></li>
+</ul>
+<img alt="_images/image32.png" src="_images/image32.png" />
+<ul class="simple">
+<li><p>Create a new private member variable called “username” of type “String” and annotate it with the &#64;Column annotation with the unique option set to “true”</p></li>
+<li><p>Create a new private member variable called “password” of type “String” and annotate it with the &#64;Column annotation, no options enabled</p></li>
+</ul>
+<img alt="_images/image33.png" src="_images/image33.png" />
+<ul class="simple">
+<li><p>Private member variables are only accessible within the class they reside in, so for us to be able to get these values or set these values, we need to generate getters and setters for each field. Generate the getters and setters for each field by pressing Alt+Insert and selecting Getter and Setter</p></li>
+</ul>
+<img alt="_images/image34.png" src="_images/image34.png" />
+<ul class="simple">
+<li><p>Select all 3 fields you wish to generate these methods for and click ok</p></li>
+</ul>
+<img alt="_images/image35.png" src="_images/image35.png" />
+<ul class="simple">
+<li><p>Next we need a way to create this object, and for that we need a constructor. Constructors create Objects inside of Java, and you can overload constructors to be able to handle multiple different scenarios when creating an object, the most common scenarios include a No Argument constructor, and an All Argument constructor. Let’s go ahead and generate both of those now. On your keyboard press Alt+Insert and select Constructor, at the bottom of the pop-up click on “Select None”</p></li>
+</ul>
+<img alt="_images/image36.png" src="_images/image36.png" />
+<img alt="_images/image37.png" src="_images/image37.png" />
+<ul class="simple">
+<li><p>Replicate those steps except this time rather than choosing the “Select None” option, select all the fields and click “Ok”</p></li>
+</ul>
+<img alt="_images/image38.png" src="_images/image38.png" />
+<ul class="simple">
+<li><p>Congratulations! You have successfully created your first entity! Notice that we have not included the One-to-Many relationship with the Notes table yet. We will do that soon. At this point, take a look at the Data Model provided above and try to create the class that will represent the rows within the Notes table. Do not worry about the foreign key column yet. Create a new Java class called Note, annotate it accordingly, create two private member variables called “id” of type “Long” and “body” of type “String” and give each member the corresponding annotations, generate the Getters and Setters, generate the All Arguments Constructor and the No Arguments Constructors. Feel free to look at the User class as a reference. Contact the Tech Lead for assistance if needed! (Hint: You may need to use the columnDefinition option for the “body” String)</p></li>
+</ul>
+<p>This is what you should have ended up with:</p>
+<img alt="_images/image39.png" src="_images/image39.png" />
+<ul class="simple">
+<li><p>At this point let’s show you a nifty dependency we included when we initialized our project. The dependency is called Lombok and looks at the member variables and can generate all of our getters and setters for us, as well as the constructors all through 3 annotations. Underneath the &#64;Table annotation we can add the following: &#64;Data, &#64;AllArgsConstructor, &#64;NoArgsConstructor and it simplifies our class down to the following:</p></li>
+</ul>
+<img alt="_images/image40.png" src="_images/image40.png" />
+<p><strong>Lombok is pretty powerful, and it can simplify the code to make it easier to read. Just know the &#64;Data annotation in large applications can have memory overhead issues and there are other annotations you can use to replace &#64;Data with. IntelliJ as well as the Lombok documentation are great resources to learn more</strong></p>
+<ul class="simple">
+<li><p>If you like the look of the simplified class, feel free to adapt the User class to use Lombok as well.</p></li>
+<li><p>We now need to handle our One-to-Many relationship within our Data Model. The first step is to decide which side is the owning side of the relationship. The owning side is usually the side that is the “Many” portion of the relationship, or the side that owns the foreign key in our case the owning side is the Notes table as it contains the foreign key, and is the “Many” side of the relationship. We are going to make use of a Java Data Structure called a Set to act as the container for our Notes. The reason we chose a Set is because each item within a Set is unique. This does not mean that the “body” Strings can’t be duplicated, you could have two Notes that say the same thing. What the Set does though is prevent two copies of the Note Object from being added in and taking up excess space in your application.</p></li>
+<li><p>Navigate to the Note class you created and create a private member variable named “user” of Type “User” (Note that when you import this class make sure you import the User class from the package com.devmountain.noteApp.entities, not any of the other User classes) and annotate it with the &#64;ManyToOne, and &#64;JsonBackReference</p></li>
+<li><p>&#64;ManyToOne creates the association within Hibernate</p></li>
+<li><p>&#64;JsonBackReference prevents infinite recursion when you deliver the resource up as JSON through the RESTful API endpoint you will create</p></li>
+</ul>
+<img alt="_images/image41.png" src="_images/image41.png" />
+<img alt="_images/image42.png" src="_images/image42.png" />
+<ul class="simple">
+<li><p>Now navigate to the User class and let’s create the other half of this relationship. Create a private Set of type Note called “noteSet” and set it equal to a new HashSet, then annotate it with the &#64;OneToMany Annotation with the mappedBy option set to “user”, the fetch option set to the FetchType.LAZY, and the cascade types set to CascadeType.MERGE and CascadeType.PERSIST. Also we need to annotate our set with &#64;JsonManagedReference to handle the other half of mitigating infinite recursion. If you need help with this step reach out to the Tech Lead, you should end up with this:</p></li>
+</ul>
+<img alt="_images/image43.png" src="_images/image43.png" />
+<ul class="simple">
+<li><p>Congratulations! You have successfully created the schema for our data model! If you were to run your Application at this point, and query your database using PgAdmin, you would see two tables, a Users table and a Notes table</p></li>
+</ul>
+<img alt="_images/image44.png" src="_images/image44.png" />
+<img alt="_images/image45.png" src="_images/image45.png" />
+<img alt="_images/image46.png" src="_images/image46.png" />
+<ul class="simple">
+<li><p>The next step we need to do is to create our Data Transfer Objects, or DTO’s. As a general rule, it is not a good idea to send your entities outside of the application or within the application context itself because the entities themselves are tied to the Database, and changes that can potentially open your application up to vulnerabilities or accidental changes to your data. To avoid passing around the Entity object itself, we create lightweight copies of them solely for the purpose of transferring the data stored within the object.</p></li>
+<li><p>Let’s start by creating a new package, right click on the com.devmountain.noteApp package and create a new package called “dtos”</p></li>
+<li><p>Within the “dtos” package create two new Java classes, one called “UserDto” and the other called “NoteDto”</p></li>
+</ul>
+<img alt="_images/image47.png" src="_images/image47.png" />
+<p>Open the UserDto class and let’s begin to create the class.</p>
+<ul class="simple">
+<li><p>First annotate the class with the &#64;Data, &#64;AllArgsConstructor, and &#64;NoArgsConstructor annotations.</p></li>
+<li><p>Create four private member variables: one called “id” of type “Long”, one called “username” of type “String”, one called “password” of type “String”, and one called “noteDtoSet” of type “Set&lt;NoteDto&gt;” and set it equal to a new HashSet. Note that these member variables do not have any annotations associated with them.</p></li>
+<li><p>In the declaration of the class, we need to implement the Serializable interface to allow this class to be converted to a Bytestream and sent outside the application or stored in a log file.</p></li>
+<li><p>Finally we need to create a custom constructor that accepts a User object as its argument and maps the DTO object fields accordingly. This step provides an opportunity to include some conditional logic within the constructor to prevent null pointer exceptions, you may hear this called “sanity checking” in your career as a software developer.</p></li>
+<li><p>This is the class you should have ended up with, Note that we do not have any Entities stored within the DTO either as they have been replaced with the DTO version of the Entity. Notice that the HashSet is not included in the constructor, this is a way we can avoid StackOverFlow errors later on down the line. If we were to include the Set inside of the constructor we would end up with infinite recursion. We have left the member variable there in case we have need to use the setter later on but it is highly unlikely we will need it</p></li>
+</ul>
+<img alt="_images/image48.png" src="_images/image48.png" />
+<ul class="simple">
+<li><p>Try and create the NoteDto on your own using the UserDto as a reference, Note that the NoteDto does not need the UserDto field to be within the constructor either for similar reasons presented above</p></li>
+</ul>
+<p>Here is what you should have ended up with:</p>
+<img alt="_images/image49.png" src="_images/image49.png" />
+<ul class="simple">
+<li><p>Now that you have created your DTO’s we need to add something else to our Entity classes, just like we had to create a custom constructor inside of the DTO that accepted an Entity argument, we now need to create a custom constructor inside of the Entity that accepts a DTO argument. Note that on the Entity side, we do not need to define the “id” member variable when constructing a new object as that value is being generated for us by Hibernate’s &#64;Id and &#64;GeneratedValue annotations. Create those constructors now for User and Note respectively that accept their associated DTO classes as an argument. Note that User’s “noteSet” field is already being initialized to a “new HashSet&lt;&gt;()” and Note’s “user” field cannot be defined from the DTO, so it is not necessary to define either field in the constructor, those fields will be populated in the Service layer we will create tomorrow.</p></li>
+<li><p>These are the constructors you should have ended up with:</p></li>
+</ul>
+<img alt="_images/image50.png" src="_images/image50.png" />
+<img alt="_images/image51.png" src="_images/image51.png" />
+<ul class="simple">
+<li><p>Congratulations on making it through! If you have any questions please contact the Tech Lead to help you!</p></li>
+</ul>
+</section>
+</section>
+<section class="section" id="day-3-creating-the-access-layers-to-interact-with-the-database">
+<h2>Day 3: Creating the Access Layers to Interact with the Database</h2>
+<p>You can think of the Controller/Service/Repository layers as a shipping center. A shipping center at any major store has many loading docks that trucks can back up to. Trucks can be carrying cargo (PUT, POST, DELETE, UPDATE) or they can be empty and ready to be loaded (GET). The loading docks are like the RESTful API endpoints, the truck has to be sure to go to the correct dock in order to perform what it is trying to do. A truck filled with cargo cannot show up to the loading dock and try to unload their cargo when that specific dock is for loading trucks up with cargo, they need to go to the docks that are set up to be able to unload that cargo.</p>
+<p>The Controller Layer is responsible for creating the API endpoints, it is responsible for deciding what “loading docks” do what action and only interacts with the Service Layer.</p>
+<p>Continuing on with our analogy, the truck has now backed up to the dock and the workers at the dock now either load the truck up (GET), or offload the truck and send back an optional response (PUT, POST, DELETE, UPDATE). The workers who are there at the dock and are deciding what to do are like the Service Layer. They are the ones who are responsible for sending the cargo to where it needs to go, or triggering the other workers to grab the correct items to load the truck up again.</p>
+<p>The Service layer interacts with the Controller layer as well as the Repository layer, it processes the information it receives from the Repository Layer, performs any necessary transformations, and then passes it to the Controller Layer to be sent out and keep the trucks moving.</p>
+<p>You can think of the Repository Layer as the warehouse workers that actually go and fetch the items off the shelves. The warehouse being like a giant database full of information, the warehouse workers (Repository Layer) navigate to where the item is at, retrieve it, and hand it off to the workers at the loading dock (Service Layer).</p>
+<p>The Repository Layer only interacts with the Service Layer and the Entities.</p>
+<section class="section" id="step-1-creating-the-repository-layer">
+<h3>Step 1: Creating the Repository Layer</h3>
+<p>The Repository layer is responsible for interacting with the database. We can use Spring Data JPA however to make this process a little easier as well as increase developer agility by leveraging the Domain Specific Language provided by Spring Data JPA (Feel free to spend some time learning about what a Domain Specific Language is, they’re really cool!)</p>
+<ul class="simple">
+<li><p>Right click on the “com.devmountain.noteApp” package and create a new package called “repositories”</p></li>
+<li><p>Right click on the “repositories” package and create two new Java Classes that are Interfaces, one called “UserRepository” and the other called “NoteRepository”</p></li>
+<li><p>Open the “UserRepository” Interface you just created and annotate the interface with the &#64;Repository annotation (this is what clues Spring Boot in to keep track of this resource for Dependency Injection)</p></li>
+<li><p>Next have the interface extend “JpaRepository” which will accept two types within the carats,</p></li>
+</ul>
+<p>&lt;Type, ID_FIELD_TYPE&gt; since we are in the UserRepository, the “Type” or class we want JpaRepository to keep track of for us is the “User” class (the one you created within the “com.devmountain.noteApp.entities” package) and its “id” field is of type “Long”.</p>
+<p>You should end up with this:</p>
+<img alt="_images/image52.png" src="_images/image52.png" />
+<p>Congratulations! Your UserRepository is finished thanks to Spring Data JPA! Of course there are things we can add to this, and will add later but just to show you we have left it blank for now so you can see the base set of methods that get implemented thanks to Spring Data JPA</p>
+<p>Use the UserRepository as a reference and create the NoteRepository such that it keeps track of the Note type. Note that the “Note” type’s “id” field is of type “Long”</p>
+</section>
+<section class="section" id="step-2-creating-the-service-layer">
+<h3>Step 2: Creating the Service Layer</h3>
+<p>The Service Layer is where the business logic resides. This is the brains of the operation lives here. This is the layer where you are receiving information from the Repository Layer, performing any necessary transformations and then passing them on to the Controller to handle the request.</p>
+<ul>
+<li><p>Create a new package within “com.devmountain.noteApp” called “services”</p></li>
+<li><p>Within the “services” package create two new Java Classes, one called “UserServiceImpl” and the other called “NoteServiceImpl”</p></li>
+<li><p>Open the “UserServiceImpl” class and annotate the class with the &#64;Service annotation</p></li>
+<li><p>Pause here and think of a few ways that you would want to be able to do in your application…</p></li>
+<li><p>Some things we thought of that may be important are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Add a new User</p></li>
+<li><p>Verify User Credentials during Login</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>With this in mind, let’s begin building the class. First we need to resolve our Dependencies that we need for this class to work. We have mentioned that the Service Layer interacts with the Repository Layer. Spring handles the Dependency Injection for us, thanks to the &#64;Repository annotation we added to our Repositories. Because of this, Spring is able to find the corresponding dependency and inject it where it is needed throughout the application by using the &#64;Autowired annotation.</p></li>
+<li><p>Let’s add a private member field called “userRepository” of type “UserRepository” and annotate it with the &#64;Autowired annotation:</p></li>
+</ul>
+<img alt="_images/image53.png" src="_images/image53.png" />
+<ul>
+<li><p>Now in order to handle the verification of User Login credentials we are going to need an implementation of the PasswordEncoder Interface that is part of the Spring Security Core Maven dependency. (Spring Security is a topic that you could spend a large amount of time alone, for brevity’s sake we will not be including the entire Spring Security dependency, just Spring Security Core. The Core package contains the BCryptPasswordEncoder class that we can use to hash passwords and see if they match)</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Add the following dependency to your pom.xml file (the pom.xml file performs a similar function to the package.json file in JavaScript using npm) such that it is inside of the &lt;dependencies&gt;&lt;dependencies/&gt; tags</p></li>
+</ul>
+<img alt="_images/image54.png" src="_images/image54.png" />
+<p>and refresh the build by either clicking on the maven logo with the refresh icon within it:</p>
+<img alt="_images/image55.png" src="_images/image55.png" />
+<ul class="simple">
+<li><p>Or clicking on maven on the far right of the screen and dropping down the noteApp dropdown, then the Lifecycle dropdown, double clicking on the “clean” option, and then double clicking the “install” option (you may need to click the blue circle icon with a lightning bolt to toggle “Skip Tests” mode)</p></li>
+</ul>
+<img alt="_images/image56.png" src="_images/image56.png" />
+<ul class="simple">
+<li><p>Please reach out to the Tech Lead if you have any questions.</p></li>
+<li><p>Next we need to actually create our custom Java Bean so that Spring can keep track of it and we can use it for Dependency Injection in our application’s context. To do so we need to create a new package within the “com.devmountain.noteApp” package called ”configuration”</p></li>
+<li><p>Within the “configuration” package create a new Java Class called Config and annotate it with the &#64;Configuration annotation</p></li>
+<li><p>Create a new public member variable of type “PasswordEncoder” called “passwordEncoder” annotated with the &#64;Bean annotation and invoke it, open up a set of curly brackets and within the curly brackets return a new BCryptPasswordEncoder(). You should have ended up with something like this:</p></li>
+</ul>
+<img alt="_images/image57.png" src="_images/image57.png" />
+<ul class="simple">
+<li><p>Spring is now keeping track of a new Bean called “passwordEncoder”! Congratulations on creating your first Custom Java Bean!</p></li>
+<li><p>Now that you have created your Java Bean we can Autowire it into our UserServiceImpl class like so:</p></li>
+</ul>
+<img alt="_images/image58.png" src="_images/image58.png" />
+<ul class="simple">
+<li><p>Now we are ready to create our two methods, one will handle Registering a User and the other will handle Logging a User into our application. Let’s start with the first method. Start by creating a public method that returns a “List&lt;String&gt;” called “addUser” that accepts a UserDto called “userDto” as an argument and annotate the method with the &#64;Transactional annotation (any time you are saving something to the database you should include the &#64;Transactional annotation which ensures that the transaction that gets opened with your datasource gets resolved)</p></li>
+<li><p>Within the method initialize a new member variable of type “List&lt;String&gt;” called “response” and set it equal to a new ArrayList</p></li>
+<li><p>Create a new method variable of type “User” (your User class from the “com.devmountain.noteApp” package) called “user” and set that equal to a new User() and pass in the “userDto” from the method’s arguments</p></li>
+<li><p>Now invoke the “saveAndFlush()” method available in the “userRepository” and pass in the “user” object you just created, this step is where a user is actually people persisted***</p></li>
+<li><p>After the user object has been persisted add a String to “response” with a success message and return the “response” method variable. This is what you should end up with:</p></li>
+</ul>
+<img alt="_images/image59.png" src="_images/image59.png" />
+<ul class="simple">
+<li><p>Let’s create the second method now, create a public method that returns “List&lt;String&gt;” called “userLogin” that accepts a UserDto called “userDto” as an argument</p></li>
+<li><p>Initiate a new method variable called “response” of type “List&lt;String&gt;” and set it equal to a new ArrayList</p></li>
+<li><p>Create a new method variable called “userOptional” of type “Optional&lt;User&gt;” and set it equal to the “findByUsername” method we are about to create in the “userRepository” and pass in the username field from the “userDto” argument.</p></li>
+<li><p>At this point we will take a small sidebar and open our UserRepository interface and create this findByUsername method using JPA’s Domain Specific Language.</p></li>
+<li><p>Within the curly braces of the interface create a method signature that returns an Optional&lt;User&gt; and begin typing “findBy”. You should see a drop down that has the words “findBy” in it, use the down arrow to highlight those words and hit <cite>Tab</cite>, at this point you should see more options for “findBy” and since we made our “username” column unique we can be sure that this method will only return one, or none, User. Use the down arrow to highlight the word “Username” and hit <cite>Tab</cite></p></li>
+</ul>
+<img alt="_images/image60.png" src="_images/image60.png" />
+<ul class="simple">
+<li><p>At this point we can open up our parentheses to be able to pass in our arguments, pass in an argument of type “String” called “username” and at this point our method is finished, JPA will implement the actual SQL logic to be able to query the database and search the Users table for the User with a username that equals the string we gave it (Hopefully you were able to see all the options for building these methods within the Repository Interface using JPA’s Domain Specific Language, the possibilities for the queries you can make are very customizable!)</p></li>
+</ul>
+<img alt="_images/image61.png" src="_images/image61.png" />
+<ul class="simple">
+<li><p>Navigate back to the UserServiceImpl class now, and let’s finish our method. At this point it should look like this:</p></li>
+</ul>
+<img alt="_images/image62.png" src="_images/image62.png" />
+<ul class="simple">
+<li><p>Optionals are there as a way to avoid “NullPointerExeptions” which will break your code and crash your application, you can think of it as a box and that box can either be empty or have something in it. The compiler does care whether it’s empty or full, it just needs to know it’s a box.</p></li>
+<li><p>We can perform some conditional logic now and check first to see if “userOptional” is present, using the “isPresent” method available on Optionals. After we know it’s present then we can check to see if the password matches the hash. Create two conditional statements, the first to see if “userOptional.isPresent()” and the second to see if “passwordEncoder.matches(userDto.getPassword(), userOptional.get().getPassword())” and if both those are true add a success message to the response list. If not, add a message notifying the person that either the Username or the Password is incorrect.</p></li>
+<li><p>If the “userOptional” is present we can also add the user’s Id to the response List so that the front end can use the Id if they need to.</p></li>
+<li><p>And if “userOptional” is not present then we can add the failure message to the response List as well. Pause here and try to create this logic, ask the Tech Lead if you need help.</p></li>
+<li><p>You should end up with something like this:</p></li>
+</ul>
+<img alt="_images/image63.png" src="_images/image63.png" />
+</div></blockquote>
+</li>
+<li><p>Now that our implementation is complete, we can use the magic of IntelliJ to extract an interface for us! Right click on any whitespace within the UserServiceImpl class and go to “Refactor” then to “Extract Interface”</p></li>
+</ul>
+<img alt="_images/image64.png" src="_images/image64.png" />
+<ul class="simple">
+<li><p>Name your service UserService and be sure to check the checkboxes next to the two member methods we’ve created and click “Refactor”</p></li>
+</ul>
+<img alt="_images/image65.png" src="_images/image65.png" />
+<ul>
+<li><p>Voila! IntelliJ has created our Interface for us! Try and build out the NoteServiceImpl by thinking about what you would need to be able to do in terms of our CRUD operations. (Note, you may need to Autowire in both the NotesRepository and the UserRepository for this Service)</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Your NoteServiceImple should have a way to find All Notes By User</p></li>
+<li><p>Add a Note</p></li>
+<li><p>Delete a Note</p></li>
+<li><p>Update a Note</p></li>
+<li><p>Find a Note by an Id</p></li>
+<li><p>Ask your Tech Lead for assistance if you need help!</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>You should have ended up with something like this for your Autowired Dependencies:</p></li>
+</ul>
+<img alt="_images/image66.png" src="_images/image66.png" />
+<ul class="simple">
+<li><p>And this for adding a Note:</p></li>
+</ul>
+<img alt="_images/image67.png" src="_images/image67.png" />
+<ul class="simple">
+<li><p>And this for deleting a Note:</p></li>
+</ul>
+<img alt="_images/image68.png" src="_images/image68.png" />
+<ul class="simple">
+<li><p>And this for updating a Note:</p></li>
+</ul>
+<img alt="_images/image69.png" src="_images/image69.png" />
+<ul class="simple">
+<li><p>The method for finding all notes by User is a bit more complicated, and it requires you to stream the List&lt;Note&gt; that gets returned from the repository into their NoteDto counterparts to be sent out. Here is what we came up with, if you have questions on what this code is doing please reach out to your Tech Lead to help you understand. This is an important concept and it would benefit you to understand the thought process behind what the method is doing</p></li>
+</ul>
+<img alt="_images/image70.png" src="_images/image70.png" />
+<p>And finally the method for getting a Note by the Note “id”</p>
+<img alt="_images/image71.png" src="_images/image71.png" />
+<ul class="simple">
+<li><p>With the methods in place we are ready to extract our Interface and begin working on our Controllers! Refactor and extract a new interface called “NoteService” the same way we did the UserServiceImpl earlier.</p></li>
+</ul>
+</section>
+<section class="section" id="step-3-creating-your-controllers">
+<h3>Step 3: Creating your Controllers</h3>
+<p>This layer is where we will actually be defining our RESTful API endpoints and creating the paths that can deliver up the information to the client that they want.</p>
+<ul class="simple">
+<li><p>Begin by creating a new package within “com.devmountain.noteApp” called “controllers”</p></li>
+<li><p>Create two new Java Classes inside the “controllers” package called “UserController” and “NoteController”</p></li>
+<li><p>Open the UserController class and annotate it with the &#64;RestController annotation as well as the &#64;RequestMapping annotation. The RequestMapping annotation can accept a String as an option and that is where you can designate a class level path that all further endpoints will begin at. This will make more sense when you see the example below</p></li>
+</ul>
+<img alt="_images/image72.png" src="_images/image72.png" />
+<ul class="simple">
+<li><p>Notice how the RequestMapping has a string with a path on it? That path is tacked on to the end of your domain, for us in development our domain is currently “<a class="reference external" href="http://localhost:8080" target="_blank">http://localhost:8080</a>” which is what Spring Boot runs on by default. So the path for everything to do with users that we just created would then begin at “<a class="reference external" href="http://localhost:8080/api/v1/users" target="_blank">http://localhost:8080/api/v1/users</a>” and if we add any further designation on our specific methods they would be tacked on to the end of that.</p></li>
+<li><p>First we need to Autowire in our Dependencies, which are the UserService because Controllers interact with ServiceLayers and the PasswordEncoder so that we can has incoming passwords</p></li>
+</ul>
+<img alt="_images/image73.png" src="_images/image73.png" />
+<ul class="simple">
+<li><p>Let’s create a method that will handle POST requests to be able to register a User. Create a public method that returns a List&lt;String&gt; called addUser that accepts an argument of type UserDto called “userDto”</p></li>
+<li><p>We need to annotate this method with the &#64;PostMapping annotation and within parentheses add a string routing this method to get triggered at the “/register” endpoint. We also need to annotate the UserDto argument with the &#64;RequestBody annotation so that the JSON body object on the request gets mapped to our DTO and becomes usable</p></li>
+</ul>
+<img alt="_images/image74.png" src="_images/image74.png" />
+<ul class="simple">
+<li><p>First we need to hash the incoming password so that we don’t unintentionally save a raw password to our database. Create a member variable of type “String” called “passHash” and set it equal to the method available on the “passwordEncoder” called “encode()” and pass in the “password” field from the “userDto” argument</p></li>
+<li><p>Invoke the “setPassword()” method available on the “userDto” argument and pass in the “passHash” variable.</p></li>
+<li><p>Now return the “addUser()” method available on the “userService” dependency and pass in the “userDto” argument. Your method is finished</p></li>
+</ul>
+<img alt="_images/image75.png" src="_images/image75.png" />
+<ul class="simple">
+<li><p>Let’s create the next method that will take care of Logging a User in. It will be another POST request, so create a public method that returns a “List&lt;String&gt;” called “userLogin” and have it accept a UserDto argument called “userDto”</p></li>
+<li><p>Annotate the method with the &#64;PostMapping annotation and give it the endpoint “/login”. Annotate the UserDto argument with &#64;RequestBody so that the JSON request body becomes usable to us</p></li>
+<li><p>Return the “userLogin()” method available on “userService” and pass in the “userDto” argument. Your login method is complete!</p></li>
+</ul>
+<img alt="_images/image76.png" src="_images/image76.png" />
+<ul class="simple">
+<li><p>Your UserController is now ready to accept POST Requests to the following endpoints: “<a class="reference external" href="http://localhost:8080/api/v1/users/register" target="_blank">http://localhost:8080/api/v1/users/register</a>” and “<a class="reference external" href="http://localhost:8080/api/v1/users/login" target="_blank">http://localhost:8080/api/v1/users/login</a>”. Feel free to test them using Postman! Create two POST requests to these endpoints. Include a body object that is JSON that has a username key-value pair and a password key-value pair</p></li>
+</ul>
+<img alt="_images/image77.png" src="_images/image77.png" />
+<img alt="_images/image78.png" src="_images/image78.png" />
+<img alt="_images/image79.png" src="_images/image79.png" />
+<img alt="_images/image80.png" src="_images/image80.png" />
+<img alt="_images/image81.png" src="_images/image81.png" />
+<ul class="simple">
+<li><p>Try register first, then try login with the same JSON object on both requests. Ask your Tech Lead if you encounter any errors. Postman is a great tool to use as you develop because you can ensure each of your endpoints work, as well as visualize the type of data that gets returned before you ever write any Front end code. Knowing this information going into creating the Front end is invaluable.</p></li>
+<li><p>Try to build out the NoteController on your own! As you can imagine the various Request types follow similar annotation patterns (e.g. GET -&gt; &#64;GetMapping etc.) The NoteController should have 5 methods corresponding to the 5 methods available on NoteService. It should only have 1 Autowired dependency. The &#64;PathVariable annotation should be incredibly useful to you, but you could also potentially make use of the &#64;RequestParam annotation. This is meant to stretch you! Use all the knowledge you have gained up to this point and try to think through how you can create these methods. Of course, ask your Tech Lead for any help you may need! An example will be provided below! Feel free to use them as you need them!</p></li>
+</ul>
+<p>Class level Annotations example:</p>
+<img alt="_images/image82.png" src="_images/image82.png" />
+<ul class="simple">
+<li><p>Get All Notes By User example:</p></li>
+</ul>
+<img alt="_images/image83.png" src="_images/image83.png" />
+<ul class="simple">
+<li><p>Add a new Note Example:</p></li>
+</ul>
+<img alt="_images/image84.png" src="_images/image84.png" />
+<ul class="simple">
+<li><p>Delete a Note Example:</p></li>
+</ul>
+<img alt="_images/image85.png" src="_images/image85.png" />
+<ul class="simple">
+<li><p>Update an existing Note Example:</p></li>
+</ul>
+<img alt="_images/image86.png" src="_images/image86.png" />
+<ul class="simple">
+<li><p>Get a Note by the Note’s id Example:</p></li>
+</ul>
+<img alt="_images/image87.png" src="_images/image87.png" />
+<ul class="simple">
+<li><p>At this point your entire back end is read to go! You can test all the endpoints in Postman and query your database using PgAdmin to see what is being written! Ask your Tech Lead if you have any questions and Congratulations! You have successfully implemented the DAO design pattern!</p></li>
+</ul>
+</section>
+</section>
+<section class="section" id="day-4-creating-the-front-end-code">
+<h2>Day 4:Creating the Front End Code</h2>
+<p>With the back end code nearly complete, now we get to move on to the front end code and what people will actually get to see on their screen! At this point there is very little that will be added to or changed in the back end, and those changes are all “Quality of Life” improvements over what they are now.  For this project we will be creating a very simple front end with HTML, CSS, and JavaScript. The only exterior tool we will be using is a styling package called Bootstrap. You can learn more about the latest version of Bootstrap here “<a class="reference external" href="https://getbootstrap.com/" target="_blank">https://getbootstrap.com/</a>”, we will be utilizing their CDN’s for CSS styling as well as JavaScript for quick development of elements such as modals. Let’s dive in!</p>
+<section class="section" id="step-1-where-do-we-put-everything-inside-of-our-spring-boot-application">
+<h3>Step 1: Where do we put everything inside of our Spring Boot Application?</h3>
+<p>The answer to this question is kind of roundabout, in that there are a few places where you can put them and each place accomplishes a different task. You can create a new project directory called “webapp” and point Spring to search for any HTML files there, or we could bring in a Template engine such as Thymeleaf as well as Spring MVC and place our files inside of a directory called “templates” within “src/main/java/resources” and resolve requests using the Model-View-Controller method. However, by far the simplest way is to put your static files within the static folder located by default within the “src/main/java/resources” directory. Spring Boot automatically scans the contents of this folder and adds them as static files available for request beginning at the root of the application and being fully qualified by the file name including its suffix. What do we mean by that though? Well, let’s try it out.</p>
+<ul class="simple">
+<li><p>Navigate to the “static” directory within “src/main/java/resources” and right click on it. Create a new HTML file named “home.html”</p></li>
+</ul>
+<img alt="_images/image88.png" src="_images/image88.png" />
+<img alt="_images/image89.png" src="_images/image89.png" />
+<ul class="simple">
+<li><p>If your file does not come preloaded with boilerplate HTML, then within your home.html file type in “!” and hit Tab to create the base for your webpage you will build today. After you have created the boilerplate code, within the body tags add an “h1” tag who’s inner text says something like “Hello World!”. Save, and run your application. With your application running, navigate to to “<a class="reference external" href="http://localhost:8080/home.html" target="_blank">http://localhost:8080/home.html</a>” <strong>Be sure to include the file’s extension when typing in your URL (e.g. “FILE_NAME.html”)</strong></p></li>
+<li><p>At this point you should be seeing your simple web page you just created! If you do not see “Hello World” or whatever you chose to put in your “h1” tag on your screen, reach out to the Tech Lead for help.</p></li>
+<li><p>Now, some logistics of how the static directory works. The static directory begins at the application’s root, which means any files that are within that directory can be found at “<a class="reference external" href="http://localhost:8080/FILE_NAME.html" target="_blank">http://localhost:8080/FILE_NAME.html</a>” but what would happen if we placed our files within another directory inside the static folder? For instance, let’s say you were making an e-commerce site and you wanted to place all of your product pages within a folder called “products” inside of the “static” folder. The path to these resources would be as follows: “<a class="reference external" href="http://localhost:8080/products/YOUR_PAGE.html" target="_blank">http://localhost:8080/products/YOUR_PAGE.html</a>” Do you see how adding directories within the static folder just adds a level to the path? The journey begins at the root, then goes to “products”, then to the file within the “products” directory. Keep this in mind if you choose to serve static files in your projects, because it makes it easy to know where to go to look for a resource as you are developing.</p></li>
+<li><p>Our project is going to consist of 3 web pages, a home page, a registration page, and a login page. Each page is going to have a JavaScript file, and a CSS file associated with it. For organizational purposes, let’s create two new directories within the “static” directory called “javascript” and “css”. We can organize our files by placing all JavaScript files within the “javascript” directory and doing the same for CSS.</p></li>
+<li><p>Create two additional HTML files called “login.html” and “register.html” within the “static” folder and ensure they have the same boilerplate code for a basic web page.</p></li>
+<li><p>Create three JavaScript files within the “javascript” directory called “home.js”, “login.js”,  and “register.js”. Do the same for CSS within the “css” folder. At this point your project should look similar to this:</p></li>
+</ul>
+<img alt="_images/image90.png" src="_images/image90.png" />
+<ul class="simple">
+<li><p>Link all the corresponding files together, for example in “home.html” add the “link” tag within the “head” section to the “home.css” stylesheet and down at the bottom before the closing “body” tag add the “script” tag linking to “home.js” and replicate for all 3 web pages.</p></li>
+</ul>
+<img alt="_images/image91.png" src="_images/image91.png" />
+<ul class="simple">
+<li><p>Let’s start with creating our Registration page, because it will be pretty simple and we can reuse most of our HTML for our Login page as well with some minor tweaks. First we need to grab the latest CDN link for the most recent version of Bootstrap for styling. Navigate to “<a class="reference external" href="https://getbootstrap.com/docs/5.1/getting-started/introduction/" target="_blank">https://getbootstrap.com/docs/5.1/getting-started/introduction/</a>” (5.1 is the most recent version at the time this project was created) and under the bold section titled “CSS” you should see a “link” tag that you can copy to your clipboard</p></li>
+</ul>
+<img alt="_images/image92.png" src="_images/image92.png" />
+<ul>
+<li><p>Now that you have linked in Bootstrap, you’ll be able to follow along in their documentation to add quick and modern looking styles by simply adding classes to your HTML elements. There can be a bit of a learning curve, but if you get the hang of it then it can greatly increase efficiency as well as provide a clean uniform look to all your web pages. Go ahead and add this “link” tag to the “head” section of all your HTML files. As we add classes to our elements, if you have any questions as to what they are doing, feel free to find that class name within Bootstrap’s documentation. This will provide you with a great opportunity to practice reading technical documentation.</p></li>
+<li><p>Now, back in “register.html”, add <cite>class=”container”</cite> to the “body” tag and within the “body” tags add an “div” tag and give it the class “container-md”</p></li>
+<li><p>Inside your “div” add an “h1” and set its inner text to say “REGISTER”</p></li>
+<li><p>Within the “div” tag but underneath the “h1” tag, create a “form” tag and give it an id of something like “register-form” so that we can grab it later in our JavaScript</p></li>
+<li><dl>
+<dt>Within the “form” tag create 3 “div” tags, the first two with the class “form-group” and the last one with the class “mt-1”</dt><dd><ul class="simple">
+<li><p>In the first “div” add a “label” and an “input” element to give the user a place to enter a Username like so:</p></li>
+</ul>
+<img alt="_images/image93.png" src="_images/image93.png" />
+<ul class="simple">
+<li><p>In the second “div” replicate the “label” and “input” but rather than username, make it for the password (inputs have a type called “password” that hides the characters that are typed)</p></li>
+</ul>
+<img alt="_images/image94.png" src="_images/image94.png" />
+<ul class="simple">
+<li><p>In the last “div” create a “button” as well as an “a” tag. Give the “button” and id of “submit-button”, a type of “submit”, and the classes “btn btn-primary” with its inner text set to “Submit”.</p></li>
+<li><p>Give the “a” tag an href to “./login.html” and the classes “btn btn-secondary” with its inner text set to “Login”</p></li>
+</ul>
+<img alt="_images/image95.png" src="_images/image95.png" />
+<ul class="simple">
+<li><p>Congratulations! Your registration page is complete at this point! You can add more stuff to it later if you so choose!</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>At this point you can copy all the HTML from “register.html” over to “login.html” and make a few minor tweaks like changing the “h1” to say “LOGIN”, giving the form an id of “login-form”, and replacing “register” with “login” wherever it appears in the various inputs and labels. You also would probably want “login.html” to link to “register.html” so you can change the “a” tag’s href to point to “./register.html” as well as the inner text.</p></li>
+</ul>
+<img alt="_images/image96.png" src="_images/image96.png" />
+<ul class="simple">
+<li><p>2 out of 3 web pages are now complete. Let’s get to work on the home page and then we will jump into our JavaScript and make these pages functional!</p></li>
+<li><p>Open “home.html” and let’s pause to think conceptually about what we need on our home page. We know we will be getting an array of NoteDto’s from the server, so we will likely need a container to house our Notes. We know we want to be able to add a new note so we will likely need a form to fill out to create and submit the new note. We also know we want to be able to edit the note, and we can make use of a pop-up for this (pop-up’s technical name is modal) that will fire off the GET request for that single note and then populate the modal with the request’s response, allow the user to edit and resubmit the note and have it be persisted. Try and build out the HTML to enable you to accomplish these things using your knowledge from Foundations as well as the Bootstrap documentation. If you choose to use a Bootstrap modal just know you will have to add a second script tag to the bottom of your HTML file linking to the CDN bundle on the same page you got the “link” tag for the stylesheet earlier</p></li>
+</ul>
+<p>This was our implementation:</p>
+<img alt="_images/image97.png" src="_images/image97.png" />
+<img alt="_images/image98.png" src="_images/image98.png" />
+<ul class="simple">
+<li><p>Now let’s move on to JavaScript, open “register.js” and let’s pause here and think about what it is we are trying to do while registering a user. First we know we have a form and input’s, it’s generally a good idea to store those DOM elements inside of a variable, that way it can be reused later if need be. We would need to grab our form, our username input, and our password input for use later on in our fetch request we are going to create. Let’s store those DOM elements inside of variables now.</p></li>
+</ul>
+<img alt="_images/image99.png" src="_images/image99.png" />
+<ul class="simple">
+<li><p>Next we have a base set of headers that will be included with every request. Create a variable called “headers” that equals an object with the following key-value pair ‘Content-Type’:’application/json’ as well as a variable that contains the string for our base URL</p></li>
+</ul>
+<img alt="_images/image100.png" src="_images/image100.png" />
+<ul class="simple">
+<li><p>Now we need to create a function that will handle Submitting the form. We are going to name it “handleSubmit” but you can name it whatever makes sense to you. This function needs to handle a few things:</p></li>
+<li><p>First, it needs to prevent the default behavior of the form</p></li>
+<li><p>Second, it needs to grab the value’s of the inputs and store them inside of an object that can then be used as the body for the POST request</p></li>
+<li><p>Third, it needs to actually make the request and handle the response accordingly. For quality of life we can also edit our UserServiceImpl to return a redirect URL string rather than the registration success message. When a User successfully registers, we can send back the URL for the Login page and then in our JavaScript we can redirect the window to the URL we received in the response. Here is our implementation:</p></li>
+</ul>
+<img alt="_images/image101.png" src="_images/image101.png" />
+<ul class="simple">
+<li><p>The last step is to add our event listener to our form, we want our form to listen for the “submit” event and to invoke this handleSubmit function</p></li>
+</ul>
+<img alt="_images/image102.png" src="_images/image102.png" />
+<ul class="simple">
+<li><p>Congratulations, your “register.js” file has been completed. Remember to change the response String inside of UserServiceImpl to reflect the redirect URL rather than the success message. Using this file as a template, see if you can build out the “login.js” file on your own! Note that you will also need to adjust the response String within the UserServiceImpl class to redirect the user to the “home.html” page on a successful login. You also may need to research how to create a JavaScript cookie to be able to store the user’s Id for subsequent requests once they’re logged in.</p></li>
+</ul>
+<p>Here is our implementation:</p>
+<img alt="_images/image103.png" src="_images/image103.png" />
+<img alt="_images/image104.png" src="_images/image104.png" />
+<ul>
+<li><p>Congratulations! 2 of 3 JavaScript files are completed. Let’s move on to the last file which will require the most involvement of the 3. Open “home.js” and let’s think conceptually about what it is we need to be able to do on the home page.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>First, we know that we now have a cookie we need to read to get the logged in user’s Id</p></li>
+<li><p>Second, because we have a logged in user and we are keeping track with a cookie, we will need a logout method that clears that cookie</p></li>
+<li><p>Third, we know that we have a form that submits new notes</p></li>
+<li><p>Fourth, we want to retrieve all the notes that are associated with the user when the page loads, create cards for them, and append them to a container to hold them</p></li>
+<li><p>Fifth, we want to be able to update a note which will involve a separate GET request for just that note so we can populate our modal with it</p></li>
+<li><p>Sixth, we want to be able to delete a note</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Go ahead and try to build out the logic for “home.js” on your own. We will link our implementation below:</p>
+<p>First:</p>
+<img alt="_images/image105.png" src="_images/image105.png" />
+<p>Second:</p>
+<img alt="_images/image106.png" src="_images/image106.png" />
+<p>Third:</p>
+<img alt="_images/image107.png" src="_images/image107.png" />
+<p>Fourth:</p>
+<img alt="_images/image108.png" src="_images/image108.png" />
+<p>Fifth:</p>
+<img alt="_images/image109.png" src="_images/image109.png" />
+<p>Sixth:</p>
+<img alt="_images/image110.png" src="_images/image110.png" />
+<ul class="simple">
+<li><p>These methods utilized some helper functions that we made as well, the first you’ll see is called “createNoteCards” and it accepts an array of objects. It then loops through the array and creates a little note card for each item and appends it to our container for the notes.</p></li>
+</ul>
+<img alt="_images/image111.png" src="_images/image111.png" />
+<ul class="simple">
+<li><p>The next is the “populateModal” method which accepts an object as an argument and uses that object to populate the fields within the modal as well as assign a custom “data-” tag to the “Save” button element</p></li>
+</ul>
+<img alt="_images/image112.png" src="_images/image112.png" />
+<ul class="simple">
+<li><p>The last steps were to invoke the getNotes method, add two Event Listeners in the JavaScript, and add one “onclick” attributes to the logout button in the HTML file</p></li>
+</ul>
+<img alt="_images/image113.png" src="_images/image113.png" />
+<img alt="_images/image114.png" src="_images/image114.png" />
+<p>Congratulations on completing this basic application! Feel free to add any additional styling and play around with what you can do with this basic project.</p>
+</section>
+</section>
+<section class="section" id="day-5-complete-project-and-further-study">
+<h2>Day 5: Complete Project and Further Study</h2>
+<p>Use today to finish up anything you haven’t so far. If you are done with the app, consider some of the following ideas for further study:</p>
+<ul class="simple">
+<li><p>Add a header to the pages.</p></li>
+<li><p>Include an Image with each note</p></li>
+<li><p>Include a search feature to search for words within the note body text</p></li>
+<li><p>Add some Unit tests!</p></li>
+</ul>
+<p><strong>Be sure to push your code to GitHub</strong></p>
+</section>
+</section>
+
+        </main>
+
+        <footer id="page-footer">
+            <p>&copy; 2022 Devmountain</p>
+        </footer>
+      </div>
+
+      <script src="_static/main.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+  </body>
+</html>
